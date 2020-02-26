@@ -14,6 +14,15 @@ class ImageViewer(Frame):
         Frame.__init__(self,master)
         self.master = master
 
+        self.ViewerFrame = Frame(self.master, bd = 0, bg = 'gray5', height = 700)
+        self.ViewerFrame.pack(side = TOP, fill = BOTH, expand = True)
+
+        self.Thumbnails = Frame(self.ViewerFrame, bd = 0, bg = 'gray10')
+        self.Thumbnails.pack(side = TOP, fill = BOTH, expand = True)
+
+        self.ThumbSB = Scrollbar(self.Thumbnails, orient = VERTICAL)
+        self.ThumbSB.pack(side = RIGHT, fill = Y)
+
         self.Folderchoose = Frame(self.master, bg = 'gray25', height = 50, width = 400)
         self.Folderchoose.pack(side = TOP, fill = X)
 
@@ -24,25 +33,16 @@ class ImageViewer(Frame):
         self.FileName = Frame(self.Folderchoose, bg = 'gray15', height = 50, width = 1000)
         self.FileName.place(x = 400, y = 0)
 
-        self.ViewerFrame = Frame(self.master, bd = 0, bg = 'gray5', height = 700)
-        self.ViewerFrame.pack(side = TOP, fill = BOTH, expand = True)
-
-        self.Thumbnails = Frame(self.ViewerFrame, bd = 0, bg = 'gray10')
-        self.Thumbnails.pack(side = TOP, fill = BOTH, expand = True)
-
-        self.ThumbSB = Scrollbar(self.Thumbnails, orient = VERTICAL)
-        self.ThumbSB.pack(side = RIGHT, fill = Y)
-
-        self.NextButton = Button(self.master, bd = 0, text = '>', font = ('impact',25),activeforeground = 'black',
-                                 fg = 'gray',bg = 'gray15', activebackground = 'gray20')
+        self.NextButton = Button(self.master, bd = 0, text = '>', font = ('impact',18),activeforeground = 'white',
+                                 fg = 'gray',bg = 'gray15', activebackground = 'gray15')
         self.NextButton.pack(side = RIGHT, expand = True, fill = X)
 
-        self.Zoom = Button(self.master, bd = 0, text = '+', font = ('impact',25), activeforeground = 'black',
-                           fg = 'gray',bg = 'gray15', activebackground = 'gray20')
+        self.Zoom = Button(self.master, bd = 0, text = '+', font = ('impact',18), activeforeground = 'white',
+                           fg = 'gray',bg = 'gray15', activebackground = 'gray15')
         self.Zoom.pack(side = RIGHT, expand = True, fill = X)
 
-        self.PrevButton = Button(self.master, bd = 0, text = '<', font = ('impact',25), activeforeground = 'black',
-                                 fg = 'gray', bg = 'gray15', activebackground = 'gray20')
+        self.PrevButton = Button(self.master, bd = 0, text = '<', font = ('impact',18), activeforeground = 'white',
+                                 fg = 'gray', bg = 'gray15', activebackground = 'gray15')
         self.PrevButton.pack(side = RIGHT, expand = True, fill = X)
 
     def nextButton(self):
