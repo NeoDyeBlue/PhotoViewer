@@ -49,6 +49,7 @@ class ImageViewer(Frame):
 
         for i in os.listdir(self.FolderOP):
             if i.endswith(self.filetypes):
+                self.foldr.config(fg = 'cyan')
                 self.images.append(i)
 
         self.firstimg = ("{0}/{1}".format(self.FolderOP, self.images[0]))
@@ -58,7 +59,7 @@ class ImageViewer(Frame):
         if self.w == self.h:
             self.resolution = (640,640)
         elif self.w > self.h:
-            self.resolution = (1150,640)
+            self.resolution = (1100,640)
         elif self.w < self.h:
             self.resolution = (440,640)
 
