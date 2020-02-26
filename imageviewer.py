@@ -17,43 +17,55 @@ class ImageViewer(Frame):
         self.filetypes = ('.jpg','.jpeg','.png','.gif')
         self.images = list()
 
-        self.ROW = 0
-        self.COL = 0
-        self.BUTTONCOUNT = 0
-
         self.ViewerFrame = Frame(self.master, bd = 0, bg = 'gray5', height = 700)
         self.ViewerFrame.pack(side = TOP, fill = BOTH, expand = True)
 
-        self.Thumbnails = Frame(self.ViewerFrame, bd = 0, bg = 'gray10')
-        self.Thumbnails.pack(side = TOP, fill = BOTH, expand = True)
+        self.Imageviewer = Frame(self.ViewerFrame, bd = 0, bg = 'gray', height = 640)
+        self.Imageviewer.pack(side = TOP, fill = BOTH, expand = True)
 
-        self.Folderchoose = Frame(self.master, bg = 'gray25', height = 50, width = 400)
-        self.Folderchoose.pack(side = TOP, fill = X)
+        self.FileName = Frame(self.master,bd = 0, bg = 'gray5', height = 50, width = 1120)
+        self.FileName.pack(side = TOP, fill = BOTH, expand = True)
 
-        self.foldr = Button(self.Folderchoose, text = '                    🗀', font = ('calibri', 20), fg = 'white', 
-                            bg = 'gray25',activeforeground = 'black', activebackground = 'gray40', borderwidth = 0, anchor = W,
+        self.FilenameLabel = Label(self.FileName, text = '     File name: ', bg = 'gray5', fg = 'gray', font = ('calibri',11),
+                                   anchor = W)
+        self.FilenameLabel.pack(side = LEFT,fill = X, expand = True)
+
+        self.foldr = Button(self.master, text = '🗀', font = ('calibri', 20), fg = 'white', 
+                            bg = 'gray10',activeforeground = 'black', activebackground = 'lightgray', borderwidth = 0,
                             command = self.FolderOpen)
         self.foldr.pack(side = LEFT, fill = X, expand = True)
 
-        self.FileName = Frame(self.Folderchoose,bd = 0, bg = 'gray5', height = 50, width = 1120)
-        self.FileName.place(x = 280, y = 5)
-
-        self.NextButton = Button(self.master, bd = 0, text = '>', font = ('impact',18),activeforeground = 'white',
+        self.NextButton = Button(self.master, bd = 0, text = '>', font = ('impact',20),activeforeground = 'white',
                                  fg = 'gray',bg = 'gray15', activebackground = 'gray15')
         self.NextButton.pack(side = RIGHT, expand = True, fill = X)
 
 
-        self.PrevButton = Button(self.master, bd = 0, text = '<', font = ('impact',18), activeforeground = 'white',
+        self.PrevButton = Button(self.master, bd = 0, text = '<', font = ('impact',20), activeforeground = 'white',
                                  fg = 'gray', bg = 'gray15', activebackground = 'gray15')
         self.PrevButton.pack(side = RIGHT, expand = True, fill = X)
 
     def FolderOpen(self):
         self.FolderOP = filedialog.askdirectory()
 
-    def nextButton(self):
-        pass
+        for i in os.listdir(self.FolderOP):
+            if i.endswith(self.filetypes):
+                self.images.append(i)
 
-    def zoomButton(self):
+        self.firstimg = ("{0}/{1}".format(self.FolderOP, self.images[0]))
+        print(self.firstimg)
+        self.img = Image.open(self.firstimg)
+        self.img = self.img.resize((900,640), Image.ANTIALIAS)
+
+        self.img = ImageTk.PhotoImage(self.img)
+
+        self.panel = Label(self.Imageviewer, image = self.img, bg = 'gray') 
+      
+        self.panel.image = self.img 
+        self.panel.pack(side = TOP, fill = BOTH, expand = True)
+
+        self.FilenameLabel.config(text = '     File Name: {0}'.format(self.images[0]))        
+
+    def nextButton(self):
         pass
 
     def prevButton(self):
