@@ -18,11 +18,9 @@ class ImageViewer(Frame):
         self.images = list()
         self.w = 0
         self.h = 0
+        self.resolution = None
 
-        self.ViewerFrame = Frame(self.master, bd = 0, bg = 'gray5', height = 700)
-        self.ViewerFrame.pack(side = TOP, fill = BOTH, expand = True)
-
-        self.Imageviewer = Frame(self.ViewerFrame, bd = 0, bg = 'gray', height = 640)
+        self.Imageviewer = Frame(self.master, bd = 0, bg = 'gray', height = 640)
         self.Imageviewer.pack(side = TOP, fill = BOTH, expand = True)
 
         self.FileName = Frame(self.master,bd = 0, bg = 'gray5', height = 50, width = 1120)
@@ -47,7 +45,6 @@ class ImageViewer(Frame):
         self.PrevButton.pack(side = RIGHT, expand = True, fill = X)
 
     def FolderOpen(self):
-        self.resolution = None
         self.FolderOP = filedialog.askdirectory()
 
         for i in os.listdir(self.FolderOP):
@@ -64,7 +61,7 @@ class ImageViewer(Frame):
             self.resolution = (1150,640)
         elif self.w < self.h:
             self.resolution = (440,640)
-            
+
         self.img = self.img.resize(self.resolution, Image.ANTIALIAS)
 
         self.img = ImageTk.PhotoImage(self.img)
