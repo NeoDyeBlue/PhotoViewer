@@ -14,54 +14,65 @@ class ImageViewer(Frame):
     def __init__(self, master):
         Frame.__init__(self,master)
         self.master = master
+        self.BUTTONS = list()
         self.filetypes = ('.jpg','.jpeg','.png','.gif')
         self.images = list()
         self.w = 0
         self.h = 0
+        self.imgindex = 0
         self.resolution = None
+        self.imgview = Label()
 
-        self.Imageviewer = Frame(self.master, bd = 0, bg = 'gray', height = 640)
+        self.Imageviewer = Frame(self.master, bd = 0, bg = 'gray', height = 635)
         self.Imageviewer.pack(side = TOP, fill = BOTH, expand = True)
+
+        self.Showhow = Label(self.Imageviewer, bg = 'gray',fg = 'white', text = 'Please choose a folder first to view its image files.',
+                             font =('calibri', 11), height = 35, justify = CENTER)
+        self.Showhow.pack(fill = BOTH, expand = True)
 
         self.FileName = Frame(self.master,bd = 0, bg = 'gray5', height = 50, width = 1120)
         self.FileName.pack(side = TOP, fill = BOTH, expand = True)
 
-        self.FilenameLabel = Label(self.FileName, text = '     File name: ', bg = 'gray5', fg = 'gray', font = ('calibri',11),
+        self.FilenameLabel = Label(self.FileName, bg = 'gray5', fg = 'gray', font = ('calibri',11),
                                    anchor = W)
         self.FilenameLabel.pack(side = LEFT,fill = X, expand = True)
 
         self.foldr = Button(self.master, text = '🗀', font = ('calibri', 20), fg = 'white', 
-                            bg = 'gray10',activeforeground = 'black', activebackground = 'lightgray', borderwidth = 0,
+                            bg = 'gray10',activeforeground = 'black', activebackground = 'gray20', borderwidth = 0,
                             command = self.FolderOpen)
         self.foldr.pack(side = LEFT, fill = X, expand = True)
 
         self.NextButton = Button(self.master, bd = 0, text = '>', font = ('impact',20),activeforeground = 'white',
-                                 fg = 'gray',bg = 'gray15', activebackground = 'gray15')
+                                 fg = 'gray',bg = 'gray15', activebackground = 'gray15', command = self.nextButton,
+                                 state = DISABLED)
         self.NextButton.pack(side = RIGHT, expand = True, fill = X)
 
 
         self.PrevButton = Button(self.master, bd = 0, text = '<', font = ('impact',20), activeforeground = 'white',
-                                 fg = 'gray', bg = 'gray15', activebackground = 'gray15')
+                                 fg = 'gray', bg = 'gray15', activebackground = 'gray15', command = self.prevButton,
+                                 state = DISABLED)
         self.PrevButton.pack(side = RIGHT, expand = True, fill = X)
 
-    def FolderOpen(self):
-        self.FolderOP = filedialog.askdirectory()
+        self.BUTTONS.append(self.PrevButton)
+        self.BUTTONS.append(self.NextButton)
 
-        for i in os.listdir(self.FolderOP):
-            if i.endswith(self.filetypes):
-                self.foldr.config(fg = 'cyan')
-                self.images.append(i)
+    def Viewimages(self):
+        if self.imgindex == len(self.images):
+            self.imgindex = 0
+        elif self.imgindex == -1:
+            self.imgindex += len(self.images)
 
-        self.firstimg = ("{0}/{1}".format(self.FolderOP, self.images[0]))
-        self.img = Image.open(self.firstimg)
+        self.Showhow.pack_forget()
+        self.view_img = ("{0}/{1}".format(self.FolderOP, self.images[self.imgindex]))
+        self.img = Image.open(self.view_img)
         self.w,self.h = self.img.size
 
         if self.w == self.h:
-            self.resolution = (640,640)
+            self.resolution = (633,633)
         elif self.w > self.h:
-            self.resolution = (1100,640)
+            self.resolution = (1137,633)
         elif self.w < self.h:
-            self.resolution = (440,640)
+            self.resolution = (437,633)
 
         self.img = self.img.resize(self.resolution, Image.ANTIALIAS)
 
@@ -72,13 +83,62 @@ class ImageViewer(Frame):
         self.imgview.image = self.img 
         self.imgview.pack(side = TOP, fill = BOTH, expand = True)
 
-        self.FilenameLabel.config(text = '     File Name: {0}'.format(self.images[0]))        
+        self.FilenameLabel.config(text = '     {0}'.format(self.images[self.imgindex]))        
 
     def nextButton(self):
-        pass
+        self.imgview.pack_forget()
+        self.imgindex += 1
+        self.Viewimages()
+
+    def nextEvent(self, event):
+        self.imgview.pack_forget()
+        self.imgindex += 1
+        self.Viewimages()
 
     def prevButton(self):
-        pass
+        self.imgview.pack_forget()
+        self.imgindex -= 1
+        self.Viewimages()
+
+    def prevEvent(self, event):
+        self.imgview.pack_forget()
+        self.imgindex -= 1
+        self.Viewimages()
+
+    def FolderOpen(self):
+        self.images.clear()
+        self.imgview.pack_forget()
+        self.FilenameLabel.config(text = '')
+        self.FolderOP = filedialog.askdirectory()
+
+        if not self.FolderOP:
+            self.Showhow.config(text = 'Please choose a folder first to view its image files.')
+            self.Showhow.pack(fill = BOTH, expand = True)
+            self.foldr.config(fg = 'white')
+            self.master.unbind('<Right>')
+            self.master.unbind('<Left>')
+            for y in self.BUTTONS:
+                y.config(state = DISABLED)
+        else:
+            for i in os.listdir(self.FolderOP):
+                if i.endswith(self.filetypes):
+                    self.foldr.config(fg = 'cyan')
+                    self.images.append(i)
+
+            if len(self.images) == 0:
+                self.Showhow.config(text = ('{0}\nFolder does not contain any valid image files.'.format(self.FolderOP)))
+                self.Showhow.pack(fill = BOTH, expand = True)
+                self.foldr.config(fg = 'white')
+                self.master.unbind('<Right>')
+                self.master.unbind('<Left>')
+                for y in self.BUTTONS:
+                    y.config(state = DISABLED)
+            else:
+                self.master.bind('<Right>', self.nextEvent)
+                self.master.bind('<Left>', self.prevEvent)
+                for y in self.BUTTONS:
+                    y.config(state = NORMAL)
+                self.Viewimages()
 
 app = ImageViewer(root).pack()
 
