@@ -106,6 +106,7 @@ class ImageViewer(Frame):
         self.Viewimages()
 
     def FolderOpen(self):
+        self.imgindex = 0
         self.images.clear()
         self.imgview.pack_forget()
         self.FilenameLabel.config(text = '')
